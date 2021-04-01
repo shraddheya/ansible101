@@ -1,0 +1,30 @@
+---
+- name: Install Apache.
+  hosts: all
+  become: true
+  tasks:
+    -name: Install Apache.
+    apt:
+      name:
+        - httpd
+        - httpd-devel
+      state: present
+
+    - name: copying configuration files to the servers
+      copy:
+        src: "{{ item['src'] }}"
+        dest: "{{ item['dest'] }}"
+        owner: root
+        group: root
+        mode: 0644
+      with-items:
+        - src: httpd.conf
+          dest: etc/httpd/conf/httpd.conf
+        - src: httpd-vhosts.conf
+          dest: etc/httpd/conf/httpd-vhosts.conf
+
+    - name: Ensure Apache is started and is at boot
+      service:
+        name: httpd
+        state: started
+        enabled: true

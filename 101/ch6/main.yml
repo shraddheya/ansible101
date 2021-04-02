@@ -5,29 +5,11 @@
   vars:
     node_apps_location: /usr/local/opt/node
 
+  roles:
+    - nodejs
+
   tasks:
-    - name: Install EPEL repo.
-      yum:
-        name: epel-release
-        state: present
-
-    - name: Ensure firewall is stopped
-      service:
-        name: firewalld
-        state: stopped
-
-    - name: Insatll nodejs and npm
-      yum:
-        name: npm
-        state: present
-        enablerepo: epel
-
-    - name: Install forever
-      npm:
-        name: forever
-        global: yes
-        state: present
-
+    # - include_role: nodejs
     - name: Ensure Node.js app folder exists
       file:
         path: "{{ node_apps_location }}"

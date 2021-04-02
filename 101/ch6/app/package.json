@@ -1,0 +1,8 @@
+{
+  "name": "app",
+  "description": "",
+  "author": "",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

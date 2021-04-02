@@ -1,0 +1,63 @@
+---
+- hosts: all
+  become: yes
+  
+  vars:
+    node_apps_location: /usr/local/opt/node
+
+  tasks:
+    - name: Install EPEL repo.
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Ensure firewall is stopped
+      service:
+        name: firewalld
+        state: stopped
+
+    - name: Insatll nodejs and npm
+      yum:
+        name: npm
+        state: present
+        enablerepo: epel
+
+    - name: Install forever
+      npm:
+        name: forever
+        global: yes
+        state: present
+
+    - name: Ensure Node.js app folder exists
+      file:
+        path: "{{ node_apps_location }}"
+        state: directory
+
+    - name: Copy app to server
+      copy:
+        src: app
+        dest: "{{ node_apps_location }}"
+
+    - name: Install app dependancies
+      npm: 
+        path: "{{ node_apps_location }}/app"
+
+    - name: check list of runnign apps.
+      command: >
+        forever
+        list
+      vars:
+        ansible_become: false
+      register: forever_list
+      changed_when: false
+
+    - name: forever list
+      debug: var=forever_list.stdout
+
+    - name: Start app
+      command: "forever start {{ node_apps_location }}/app/app.js"
+      vars:
+        ansible_become: false
+      when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
+
+    

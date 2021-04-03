@@ -1,0 +1,5 @@
+---
+roles:
+  - name: geerlingguy.java
+    # version: version goes here
+  - name: geerlingguy.solr

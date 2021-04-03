@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - name: Register the output of the 'uptime' command
+      command: uptime
+      changed_when: false
+      register: system_uptime  # comment
+
+    - name: print the registered output of the 'uptime' command
+      debug:
+        var: system_uptime.stdout
